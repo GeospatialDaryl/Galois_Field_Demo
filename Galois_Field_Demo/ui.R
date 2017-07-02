@@ -21,7 +21,7 @@ shinyUI(fluidPage(
       #       dataTableOutput("tableValpha")),
       #column(4,
       #      dataTableOutput("tableVcoeff")),
-      tableOutput("tableValpha"),
+      tableOutput("t1"),
       tableOutput("tableVcoeff"),
       
       plotOutput("plot1"),

@@ -4,47 +4,39 @@ library(tidyr)
 library(xtable )
 shinyServer(function(input, output) {
   
-  #alpha <- input$sliderAlpha
-  #fw <- input$sliderFW
-  
-  vname <- vector(mode = "character", length = 20)
-  vcoeff <- vector(mode = "integer", length = 20) 
-  
-  for (i in seq(fw)){
-    vname[i] <- paste("a^",as.character(i-1))
-    vcoeff[i] <- alpha^(i-1)
-    #print(i, vname[i], vcoeff[i])
-  }
-  vname[1] <- "0"
-  vcoeff[1] <- 0
-  
-  dCoeff <- tbl_df(vcoeff)
-  dName <- tbl_df(vname)
-  
-  #output$tableVcoeff <- tbl_df(vcoeff)  
-  #output$tableValpha <- tbl_df(vname)
+ 
 
-  
-  #reactiveDf <- reactive({return(tbl_df(vname))})
-  
-  #reactiveAlpha <- reactive({return(dAlpha) # %>%
-                      #filter(carb %in% input$Category))})
-#https://stackoverflow.com/questions/36203200/how-to-make-a-dataset-reactive-in-shiny
-    })
-  
-  #reactiveCoeff <- reactive({return(dCoeff) # %>%
-    #filter(carb %in% input$Category))})
-    #https://stackoverflow.com/questions/36203200/how-to-make-a-dataset-reactive-in-shiny
-  #})
-  
-
-  
-  output$tableValpha <- renderUI({
-    M <- matrix(valpha,nrow=1)
-    rownames(M) <- c('function')
+  output$t1 <- renderUI({
+    
+    alpha <- input$sliderAlpha
+    fw <- input$sliderFW
+    
+    va <- venc
+    vname <- vector(mode = "character", length = fw)
+    vcoeff <- vector(mode = "integer", length = fw) 
+    seqfw <- seq(fw)
+    
+    for (i in seqfw ){
+      vname[i] <- paste("a^{",as.character(i-2),"}")
+      vcoeff[i] <- alpha^(i-1)
+      #print(i, vname[i], vcoeff[i])
+    }
+    
+    vname[1] <- "0"
+    vcoeff[1] <- 0
+    va
+    
+    dCoeff <- tbl_df(vcoeff)
+    dName <- tbl_df(vname)
+    
+    M <- matrix(rbind(vname, vcoeff) ,nrow=2)
+    rownames(M) <- c('function',"value")
     M <- print(xtable(M, align=rep("c", ncol(M)+1)), 
                floating=FALSE, tabular.environment="array", comment=FALSE, print.results=FALSE)
-    html <- paste0("$$", M, "$$")
+    html <- paste0("$$\\huge", M, "$$")
+    
+    print(M)
+    
     list(
       withMathJax(HTML(html))
     )
@@ -52,10 +44,6 @@ shinyServer(function(input, output) {
     
     
   output$tableVcoeff <- renderTable({reactiveCoeff})
-  
-  
-
-  
   
   
   
@@ -104,3 +92,4 @@ shinyServer(function(input, output) {
   output$pred2 <- renderText({
     model2pred()
   })
+})
