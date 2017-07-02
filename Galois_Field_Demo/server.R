@@ -1,6 +1,7 @@
 library(shiny)
 library(dplyr)
 library(tidyr)
+library(xtable )
 shinyServer(function(input, output) {
   
   #alpha <- input$sliderAlpha
@@ -23,18 +24,33 @@ shinyServer(function(input, output) {
   #output$tableVcoeff <- tbl_df(vcoeff)  
   #output$tableValpha <- tbl_df(vname)
 
-  reactiveCoeff <- reactive({return(dCoeff) # %>%
+  
+  #reactiveDf <- reactive({return(tbl_df(vname))})
+  
+  #reactiveAlpha <- reactive({return(dAlpha) # %>%
                       #filter(carb %in% input$Category))})
 #https://stackoverflow.com/questions/36203200/how-to-make-a-dataset-reactive-in-shiny
     })
   
-  reactiveCoeff <- reactive({return(dCoeff) # %>%
+  #reactiveCoeff <- reactive({return(dCoeff) # %>%
     #filter(carb %in% input$Category))})
     #https://stackoverflow.com/questions/36203200/how-to-make-a-dataset-reactive-in-shiny
+  #})
+  
+
+  
+  output$tableValpha <- renderUI({
+    M <- matrix(valpha,nrow=1)
+    rownames(M) <- c('function')
+    M <- print(xtable(M, align=rep("c", ncol(M)+1)), 
+               floating=FALSE, tabular.environment="array", comment=FALSE, print.results=FALSE)
+    html <- paste0("$$", M, "$$")
+    list(
+      withMathJax(HTML(html))
+    )
   })
-  
-  
-  output$tableValpha <- renderTable({reactiveAlpha})
+    
+    
   output$tableVcoeff <- renderTable({reactiveCoeff})
   
   
@@ -88,4 +104,3 @@ shinyServer(function(input, output) {
   output$pred2 <- renderText({
     model2pred()
   })
-})
